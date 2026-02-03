@@ -14,11 +14,10 @@
             margin: 0;
             background-color: #ffe6e6;
             font-family: 'Arial', sans-serif;
-            overflow: hidden;
+            overflow: hidden; /* Prevents scrollbars if the button moves */
             text-align: center;
         }
 
-        /* Flower Styling */
         #flower-container {
             display: none;
             position: relative;
@@ -56,9 +55,8 @@
         .bloom .petal.three { transform: rotate(180deg); }
         .bloom .petal.four { transform: rotate(270deg); }
 
-        h1 { color: #d63384; font-size: 2rem; }
+        h1 { color: #d63384; font-size: 2rem; z-index: 10; position: relative; }
 
-        /* Button Container */
         .btn-wrapper {
             display: flex;
             gap: 20px;
@@ -66,7 +64,6 @@
             align-items: center;
             height: 100px;
             width: 100%;
-            position: relative;
         }
 
         button {
@@ -76,17 +73,16 @@
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: 0.2s;
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; }
+        #yesBtn { background-color: #ff4d6d; color: white; position: relative; z-index: 100; }
         
-        /* The "No" button now starts visible in the layout */
         #noBtn { 
             background-color: #adb5bd; 
             color: white; 
             position: relative; 
-            z-index: 999;
+            z-index: 99;
+            transition: 0.1s ease; /* Faster jump */
         }
     </style>
 </head>
@@ -111,15 +107,20 @@
         function moveButton() {
             const noBtn = document.getElementById('noBtn');
             
-            // Switch to absolute positioning only when they try to click it
-            noBtn.style.position = 'absolute';
+            // Define how far from the edge the button must stay (padding)
+            const padding = 60;
             
-            // Calculate random position
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+            // Calculate available space
+            const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
+
+            // Ensure coordinates are within the visible screen
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxWidth));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxHeight));
+
+            noBtn.style.position = 'fixed'; // Fixed keeps it relative to the screen
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
         }
 
         function celebrate() {
