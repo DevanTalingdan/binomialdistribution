@@ -14,86 +14,110 @@
             margin: 0;
             background-color: #ffe6e6;
             font-family: 'Arial', sans-serif;
-            overflow: hidden; /* Prevents scrollbars if the button moves */
+            overflow: hidden;
             text-align: center;
+            transition: background-color 1s;
         }
 
-        #flower-container {
+        /* Flower Garden Container */
+        .garden {
             display: none;
-            position: relative;
-            width: 100px;
-            height: 160px;
+            flex-direction: row;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-end;
+            height: 180px;
             margin-bottom: 20px;
         }
+
+        /* Flower Base Logic */
+        .flower { position: relative; width: 80px; height: 160px; }
         .stem {
-            width: 8px;
+            width: 6px;
             height: 0;
             background: #2d6a4f;
             position: absolute;
             bottom: 0;
-            left: 46px;
+            left: 37px;
             border-radius: 5px;
-            transition: height 2s ease-out;
+            transition: height 1.5s ease-out;
         }
         .petal {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             background: #ff4d6d;
             border-radius: 50% 50% 0 50%;
             position: absolute;
             top: 0;
-            left: 25px;
+            left: 20px;
             transform-origin: bottom right;
             opacity: 0;
             transform: scale(0);
-            transition: all 1.5s ease-out;
+            transition: all 1s ease-out;
         }
+
+        /* Bloom Sequence */
         .bloom .stem { height: 100px; }
         .bloom .petal { opacity: 1; transform: scale(1); }
-        .bloom .petal.one { transform: rotate(0deg); }
-        .bloom .petal.two { transform: rotate(90deg); }
-        .bloom .petal.three { transform: rotate(180deg); }
-        .bloom .petal.four { transform: rotate(270deg); }
+        .petal.one { transform: rotate(0deg); }
+        .petal.two { transform: rotate(90deg); }
+        .petal.three { transform: rotate(180deg); }
+        .petal.four { transform: rotate(270deg); }
 
-        h1 { color: #d63384; font-size: 2rem; z-index: 10; position: relative; }
+        /* Staggered blooming for variety */
+        .f2 .petal { background: #ff85a1; } /* Pinker flower */
+        .f3 .petal { background: #c9184a; } /* Darker flower */
+
+        h1 { color: #d63384; font-size: 2.2rem; margin: 20px; text-shadow: 2px 2px white; }
 
         .btn-wrapper {
             display: flex;
-            gap: 20px;
+            gap: 30px;
             justify-content: center;
             align-items: center;
-            height: 100px;
+            min-height: 150px;
             width: 100%;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 35px;
+            font-size: 1.3rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; position: relative; z-index: 100; }
+        #yesBtn { background-color: #ff4d6d; color: white; transition: transform 0.2s; }
+        #yesBtn:active { transform: scale(0.9); }
         
         #noBtn { 
             background-color: #adb5bd; 
             color: white; 
             position: relative; 
-            z-index: 99;
-            transition: 0.1s ease; /* Faster jump */
+            transition: 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
     </style>
 </head>
 <body>
 
-    <div id="flower-container">
-        <div class="stem"></div>
-        <div class="petal one"></div>
-        <div class="petal two"></div>
-        <div class="petal three"></div>
-        <div class="petal four"></div>
+    <div class="garden" id="garden">
+        <div class="flower f1" id="fl1">
+            <div class="stem"></div>
+            <div class="petal one"></div><div class="petal two"></div>
+            <div class="petal three"></div><div class="petal four"></div>
+        </div>
+        <div class="flower f2" id="fl2">
+            <div class="stem"></div>
+            <div class="petal one"></div><div class="petal two"></div>
+            <div class="petal three"></div><div class="petal four"></div>
+        </div>
+        <div class="flower f3" id="fl3">
+            <div class="stem"></div>
+            <div class="petal one"></div><div class="petal two"></div>
+            <div class="petal three"></div><div class="petal four"></div>
+        </div>
     </div>
 
     <h1 id="question">Will you be my Valentine? ❤️</h1>
@@ -106,28 +130,33 @@
     <script>
         function moveButton() {
             const noBtn = document.getElementById('noBtn');
-            
-            // Define how far from the edge the button must stay (padding)
-            const padding = 60;
-            
-            // Calculate available space
-            const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
-            const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
+            noBtn.style.position = 'fixed';
 
-            // Ensure coordinates are within the visible screen
-            const randomX = Math.max(padding, Math.floor(Math.random() * maxWidth));
-            const randomY = Math.max(padding, Math.floor(Math.random() * maxHeight));
+            // Constraint: Keeps the button in the middle 60% of the screen
+            // This prevents it from ever going off-screen or too far away
+            const areaWidth = window.innerWidth * 0.6;
+            const areaHeight = window.innerHeight * 0.6;
+            const offsetWidth = (window.innerWidth - areaWidth) / 2;
+            const offsetHeight = (window.innerHeight - areaHeight) / 2;
 
-            noBtn.style.position = 'fixed'; // Fixed keeps it relative to the screen
+            const randomX = offsetWidth + Math.random() * (areaWidth - noBtn.offsetWidth);
+            const randomY = offsetHeight + Math.random() * (areaHeight - noBtn.offsetHeight);
+
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }
 
         function celebrate() {
-            document.getElementById('question').innerHTML = "I knew you'd say yes! 🥰";
-            const container = document.getElementById('flower-container');
-            container.style.display = 'block';
-            setTimeout(() => container.classList.add('bloom'), 100);
+            document.getElementById('question').innerHTML = "I knew you'd say yes! 🥰<br>Can't wait for our date!";
+            
+            // Show Garden
+            const garden = document.getElementById('garden');
+            garden.style.display = 'flex';
+            
+            // Staggered blooming
+            setTimeout(() => document.getElementById('fl1').classList.add('bloom'), 200);
+            setTimeout(() => document.getElementById('fl2').classList.add('bloom'), 600);
+            setTimeout(() => document.getElementById('fl3').classList.add('bloom'), 1000);
             
             document.querySelector('.btn-wrapper').style.display = 'none';
             document.body.style.backgroundColor = '#ffb3c1';
