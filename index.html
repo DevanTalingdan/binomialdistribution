@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>devanbinomialdistributionquestions</title>
+    <title>A Special Question</title>
     <style>
         body {
             display: flex;
@@ -18,7 +18,7 @@
             text-align: center;
         }
 
-        /* Floating Hearts */
+        /* Background Hearts */
         .heart {
             position: absolute;
             bottom: -50px;
@@ -36,7 +36,7 @@
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Fixed Bouquet Container */
+        /* Bouquet Container */
         .bouquet {
             display: none;
             position: relative;
@@ -46,22 +46,29 @@
             z-index: 5;
         }
 
-        /* The stems all meet at the bottom center */
-        .stem {
-            width: 5px;
-            height: 0;
-            background: linear-gradient(#2d6a4f, #1b4332);
+        .flower {
             position: absolute;
-            bottom: 50px;
+            bottom: 80px;
             left: 50%;
             transform-origin: bottom center;
-            border-radius: 5px;
-            transition: height 2s ease-out;
         }
 
-        /* Peony Heads - Positioned to stay upright */
+        /* The Stem now holds the Flower Head */
+        .stem {
+            width: 6px;
+            height: 0;
+            background: linear-gradient(#2d6a4f, #1b4332);
+            position: relative;
+            border-radius: 5px;
+            transition: height 2s ease-out;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Peony Head - Stays at the top of the stem */
         .peony-head {
             position: absolute;
+            top: -40px; /* Positions head exactly on the tip of the stem */
             width: 90px;
             height: 90px;
             opacity: 0;
@@ -71,7 +78,6 @@
 
         .petal {
             position: absolute;
-            background: #ff758f;
             border-radius: 50% 50% 45% 45%;
             left: 25px; top: 15px;
             width: 40px; height: 55px;
@@ -80,23 +86,23 @@
             box-shadow: inset 0 0 15px rgba(255, 20, 100, 0.3);
         }
 
-        /* Staggered positions for a natural bunch look */
-        .f1 .peony-head { top: 40px; left: 20px; }
-        .f2 .peony-head { top: 10px; left: 70px; }
-        .f3 .peony-head { top: 0px; left: 130px; }
-        .f4 .peony-head { top: 15px; left: 190px; }
-        .f5 .peony-head { top: 50px; left: 230px; }
+        /* Staggered Heights and Rotations */
+        .f1 { transform: rotate(-25deg); } .f1 .stem { height: 0; }
+        .f2 { transform: rotate(-12deg); } .f2 .stem { height: 0; }
+        .f3 { transform: rotate(0deg); }   .f3 .stem { height: 0; }
+        .f4 { transform: rotate(12deg); }  .f4 .stem { height: 0; }
+        .f5 { transform: rotate(25deg); }  .f5 .stem { height: 0; }
 
-        /* Stem rotations to match the heads */
-        .f1 .stem { transform: translateX(-50%) rotate(-25deg); }
-        .f2 .stem { transform: translateX(-50%) rotate(-12deg); }
-        .f3 .stem { transform: translateX(-50%) rotate(0deg); }
-        .f4 .stem { transform: translateX(-50%) rotate(12deg); }
-        .f5 .stem { transform: translateX(-50%) rotate(25deg); }
+        /* Final Heights on Bloom */
+        .bloom.f1 .stem { height: 180px; }
+        .bloom.f2 .stem { height: 210px; }
+        .bloom.f3 .stem { height: 230px; }
+        .bloom.f4 .stem { height: 210px; }
+        .bloom.f5 .stem { height: 180px; }
 
-        .bloom .stem { height: 180px; }
         .bloom .peony-head { opacity: 1; transform: scale(1); }
 
+        /* Colors */
         .f1 .petal { background: #ff85a1; }
         .f2 .petal { background: #ff4d6d; }
         .f3 .petal { background: #ffb3c1; }
@@ -106,7 +112,7 @@
 
         .ribbon {
             position: absolute;
-            bottom: 40px;
+            bottom: 70px;
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
@@ -139,7 +145,7 @@
         }
 
         #yesBtn { background-color: #ff4d6d; color: white; transition: transform 0.3s ease; z-index: 100; }
-        #noBtn { background-color: #adb5bd; color: white; position: absolute; left: calc(50% + 70px); z-index: 50; }
+        #noBtn { background-color: #adb5bd; color: white; position: absolute; left: calc(50% + 85px); z-index: 50; }
     </style>
 </head>
 <body>
@@ -149,10 +155,11 @@
             for (let i = 1; i <= 5; i++) {
                 document.write(`
                     <div class="flower f${i}" id="fl${i}">
-                        <div class="stem"></div>
-                        <div class="peony-head">
-                            ${Array.from({length: 10}).map((_, j) => `<div class="petal" style="transform: rotate(${j * 36}deg)"></div>`).join('')}
-                            ${Array.from({length: 8}).map((_, j) => `<div class="petal inner-petal" style="transform: rotate(${j * 45 + 20}deg)"></div>`).join('')}
+                        <div class="stem">
+                            <div class="peony-head">
+                                ${Array.from({length: 10}).map((_, j) => `<div class="petal" style="transform: rotate(${j * 36}deg)"></div>`).join('')}
+                                ${Array.from({length: 8}).map((_, j) => `<div class="petal inner-petal" style="transform: rotate(${j * 45 + 20}deg)"></div>`).join('')}
+                            </div>
                         </div>
                     </div>
                 `);
