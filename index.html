@@ -219,23 +219,32 @@
         }
         setInterval(createFloatingEmoji, 350);
 
-        let yesSize = 1;
+      let yesSize = 1;
+let noScale = 1; // New variable to track NO button size
 
-        function moveButton() {
-            const noBtn = document.getElementById('noBtn');
-            const yesBtn = document.getElementById('yesBtn');
-            yesSize += 0.25;
-            yesBtn.style.transform = `scale(${yesSize})`;
+function moveButton() {
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    
+    // Grow the YES button
+    yesSize += 0.25;
+    yesBtn.style.transform = `scale(${yesSize})`;
 
-            noBtn.style.position = 'fixed';
-            const jitter = 150; 
-            const x = (Math.random() - 0.5) * jitter;
-            const y = (Math.random() - 0.5) * jitter;
+    // Shrink the NO button
+    noScale -= 0.1; 
+    if (noScale < 0.2) noScale = 0.2; // Keep it from disappearing entirely
 
-            noBtn.style.left = `calc(50% + ${x}px)`;
-            noBtn.style.top = `calc(50% + ${y}px)`;
-            noBtn -= 0.125;
-        }
+    // Teleport and Jitter
+    noBtn.style.position = 'fixed';
+    const jitter = 150; 
+    const x = (Math.random() - 0.5) * jitter;
+    const y = (Math.random() - 0.5) * jitter;
+
+    // Apply both the new position AND the smaller scale
+    noBtn.style.left = `calc(50% + ${x}px)`;
+    noBtn.style.top = `calc(50% + ${y}px)`;
+    noBtn.style.transform = `scale(${noScale})`;
+}
 
         function celebrate() {
             document.getElementById('question').innerHTML = "Thanks fatty 🥰<br>Happy Valentine's Day!";
